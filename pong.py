@@ -1,3 +1,4 @@
+# By Nick Chen
 import pygame, sys
 
 # Constants
