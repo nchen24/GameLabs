@@ -5,6 +5,22 @@ def quit():
     sys.exit(0)
     pygame.quit()
 
+def replay(winner):
+    screen.fill((0, 0, 0))
+    font = pygame.font.SysFont("Times New Roman", 20)
+    msg = font.render("Player %d wins! Press space to play again, esc to quit"
+                      % winner, True, (255, 255, 255))
+    screen.blit(msg, ((SCREEN_WIDTH / 2)/ 2, SCREEN_HEIGHT / 2)) 
+    pygame.display.flip()
+    again = True
+    while again == True:
+        for event in pygame.event.get():
+            if pygame.key.get_pressed()[pygame.K_SPACE]:
+                again = False
+                #continue
+            elif pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                quit()
+
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -43,25 +59,22 @@ p1_score = 0
 p2_score = 0
 
 # Load the font for displaying the p1_score
-font = pygame.font.Font(None, 30)
+font = pygame.font.SysFont("Times New Roman", 30)
 
 # Game loop
 while True:
     # Event handler
-    if p1_score >=  11 or p2_score >= 11:
-        screen.fill((255, 255, 255))
-        playAgain = font.render("Press space to play again, esc to quit", True, (0, 0, 0))
-        screen.blit(playAgain, ((SCREEN_WIDTH / 2)/ 2, SCREEN_HEIGHT / 2)) 
-        pygame.display.flip()
-        again = True
-        while again == True:
-            for event in pygame.event.get():
-                if pygame.key.get_pressed()[pygame.K_SPACE]:
-                    again = False
-                    p2_score = 0
-                    p1_score = 0
-                elif pygame.key.get_pressed()[pygame.K_ESCAPE]:
-                    quit()
+
+    # Check for a win.  Scores are reset here because otherwise they are not
+    # preserved across the function call (...?)
+    if p1_score >= 11:
+        p1_score = 0
+        p2_score = 0
+        replay(1)
+    if p2_score >= 11:
+        p1_score = 0
+        p2_score = 0
+        replay(2)
     for event in pygame.event.get():
     	if event.type == pygame.QUIT:
             quit()
@@ -115,16 +128,16 @@ while True:
         sys.stdout.write(chr(7))
     
     # Clear screen
-    screen.fill((255, 255, 255))
+    screen.fill((0, 0, 0))
 
     # Render the ball, the paddle, and the p1_score
-    pygame.draw.rect(screen, (0, 0, 0), divider)
-    pygame.draw.rect(screen, (0, 0, 0), paddle_one_rect) # Your paddle
-    pygame.draw.rect(screen, (0, 0, 0), paddle_two_rect)
-    pygame.draw.circle(screen, (0, 0, 0), ball_rect.center, ball_rect.width / 2) # The ball
-    p1_score_text = font.render(str(p1_score), True, (0, 0, 0))
+    pygame.draw.rect(screen, (255, 255, 255), divider)
+    pygame.draw.rect(screen, (255, 255, 255), paddle_one_rect) # Your paddle
+    pygame.draw.rect(screen, (255, 255, 255), paddle_two_rect)
+    pygame.draw.circle(screen, (255, 255, 255), ball_rect.center, ball_rect.width / 2) # The ball
+    p1_score_text = font.render(str(p1_score), True, (255, 255, 255))
     screen.blit(p1_score_text, ((SCREEN_WIDTH / 4) - font.size(str(p1_score))[0] / 2, 5)) # The p1_score
-    p2_score_text = font.render(str(p2_score), True, (0, 0, 0))
+    p2_score_text = font.render(str(p2_score), True, (255, 255, 255))
     screen.blit(p2_score_text, ((SCREEN_WIDTH * 3 / 4) - font.size(str(p2_score))[0] / 2, 5)) # The p2_score
     
     # Update screen and wait 20 milliseconds

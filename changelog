@@ -1,3 +1,7 @@
+March 8 2012 17:59
+    -Changed replay to be in a separate function.  Kept score reset in the game
+     loop, would not maintain value across function call otherwise (bug?)
+
 March 8 2012 17:37
     -Added replay functionality
 
