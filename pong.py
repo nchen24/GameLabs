@@ -1,5 +1,9 @@
 # By Nick Chen
-import pygame, sys
+import pygame, sys, winsound
+
+def quit():
+    sys.exit(0)
+    pygame.quit()
 
 # Constants
 SCREEN_WIDTH = 800
@@ -44,10 +48,23 @@ font = pygame.font.Font(None, 30)
 # Game loop
 while True:
     # Event handler
+    if p1_score >=  11 or p2_score >= 11:
+        screen.fill((255, 255, 255))
+        playAgain = font.render("Press space to play again, esc to quit", True, (0, 0, 0))
+        screen.blit(playAgain, ((SCREEN_WIDTH / 2)/ 2, SCREEN_HEIGHT / 2)) 
+        pygame.display.flip()
+        again = True
+        while again == True:
+            for event in pygame.event.get():
+                if pygame.key.get_pressed()[pygame.K_SPACE]:
+                    again = False
+                    p2_score = 0
+                    p1_score = 0
+                elif pygame.key.get_pressed()[pygame.K_ESCAPE]:
+                    quit()
     for event in pygame.event.get():
     	if event.type == pygame.QUIT:
-    		sys.exit(0)
-    		pygame.quit()
+            quit()
     	# Control the paddle with the mouse
     	elif event.type == pygame.MOUSEMOTION:
     		paddle_one_rect.centery = event.pos[1]
@@ -92,8 +109,10 @@ while True:
     # Test if the ball is hit by the paddle; if yes reverse speed and add a point
     if paddle_one_rect.colliderect(ball_rect):
     	ball_speed[0] = -ball_speed[0]
+        sys.stdout.write(chr(7))
     if paddle_two_rect.colliderect(ball_rect):
     	ball_speed[0] = -ball_speed[0]
+        sys.stdout.write(chr(7))
     
     # Clear screen
     screen.fill((255, 255, 255))
