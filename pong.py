@@ -25,8 +25,8 @@ SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 # (x, y) Coordinates
-PADDLE_ONE_START = (10,  20)
-PADDLE_TWO_START = (780, 20)
+PADDLE_ONE_START = (10,  SCREEN_HEIGHT / 2)
+PADDLE_TWO_START = (780, SCREEN_HEIGHT / 2)
 PADDLE_W = 10
 PADDLE_H = 100
 DIVIDER_WIDTH = 2
@@ -85,6 +85,10 @@ while True:
     	if event.type == pygame.QUIT:
             quit()
 
+    if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+    	sys.exit(0)
+    	pygame.quit()
+
     # This tests if up or down keys are pressed; if yes, move the paddle
     if pygame.key.get_pressed()[pygame.K_w] and paddle_one_rect.top > 0:
     	paddle_one_rect.top -= BALL_SPEED
@@ -93,6 +97,11 @@ while True:
          paddle_one_rect.bottom < SCREEN_HEIGHT:
     	paddle_one_rect.top += BALL_SPEED
 
+    if ((paddle_two_rect.top + paddle_two_rect.bottom)/2) > ball_rect.top:
+        paddle_two_rect.top -= BALL_SPEED
+    elif ((paddle_two_rect.top + paddle_two_rect.bottom)/2) < ball_rect.top:
+        paddle_two_rect.top += BALL_SPEED
+
     if pygame.key.get_pressed()[pygame.K_UP] and \
        paddle_two_rect.top > 0:
     	paddle_two_rect.top -= BALL_SPEED
@@ -100,10 +109,6 @@ while True:
     elif pygame.key.get_pressed()[pygame.K_DOWN] and \
          paddle_two_rect.bottom < SCREEN_HEIGHT:
     	paddle_two_rect.top += BALL_SPEED
-
-    elif pygame.key.get_pressed()[pygame.K_ESCAPE]:
-    	sys.exit(0)
-    	pygame.quit()
     	
     # Update ball position
     if counter < 100:
@@ -124,8 +129,8 @@ while True:
         counter = 0
 
     elif ball_rect.left <= 0:
-        ball_rect.left = SCREEN_WIDTH / 2
-        ball_rect.top = SCREEN_HEIGHT / 2
+        ball_rect.left = BALL_DEF_POS[0]
+        ball_rect.top = BALL_DEF_POS[1]
         ball_speed = [-BALL_SPEED, -BALL_SPEED]
     	p2_score += 1
         counter = 0

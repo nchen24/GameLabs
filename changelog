@@ -1,3 +1,6 @@
+March 8 2012 18:36
+    -Added P2 "AI."  It always attempts to move to the same y value as the ball.
+
 March 8 2012 18:27
     -Added BALL_DEF_POS as the ball's starting location for readability
         -Moved the ball's starting position over 8 pixels to truly center it by
