@@ -6,10 +6,10 @@ def quit():
     pygame.quit()
 
 def replay(winner):
-    screen.fill((0, 0, 0))
+    screen.fill(BLACK)
     font = pygame.font.SysFont("Times New Roman", 20)
     msg = font.render("Player %d wins! Press space to play again, esc to quit"
-                      % winner, True, (255, 255, 255))
+                      % winner, True, WHITE)
     screen.blit(msg, ((SCREEN_WIDTH / 2)/ 2, SCREEN_HEIGHT / 2)) 
     pygame.display.flip()
     again = True
@@ -17,54 +17,58 @@ def replay(winner):
         for event in pygame.event.get():
             if pygame.key.get_pressed()[pygame.K_SPACE]:
                 again = False
-                #continue
             elif pygame.key.get_pressed()[pygame.K_ESCAPE]:
                 quit()
 
 # Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
-PADDLE_ONE_START_X = 10
-PADDLE_ONE_START_Y = 20
-PADDLE_TWO_START_X = 780 
-PADDLE_TWO_START_Y = 20
-PADDLE_WIDTH = 10
-PADDLE_HEIGHT = 100
-DIVIDER_WIDTH = 1
+
+# (x, y) Coordinates
+PADDLE_ONE_START = (10,  20)
+PADDLE_TWO_START = (780, 20)
+PADDLE_W = 10
+PADDLE_H = 100
+DIVIDER_WIDTH = 2
 DIVIDER_HEIGHT = SCREEN_HEIGHT
 BALL_SPEED = 10
-BALL_WIDTH_HEIGHT = 16
+BALL_W_H = 16
+BALL_DEF_POS = (SCREEN_WIDTH / 2 - BALL_W_H / 2, SCREEN_HEIGHT / 2)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Pong")
 
-# This is a rect that contains the ball at the beginning it is set in the center of the screen
-ball_rect = pygame.Rect((SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2), (BALL_WIDTH_HEIGHT, BALL_WIDTH_HEIGHT))
+# Rect that contains the ball. Default pos = center of the screen
+ball_rect = pygame.Rect(BALL_DEF_POS, (BALL_W_H, BALL_W_H))
 
 # Speed of the ball (x, y)
 ball_speed = [BALL_SPEED, BALL_SPEED]
 
 # Your paddle vertically centered on the left side
-paddle_one_rect = pygame.Rect((PADDLE_ONE_START_X, PADDLE_ONE_START_Y), (PADDLE_WIDTH, PADDLE_HEIGHT))
+paddle_one_rect = pygame.Rect(PADDLE_ONE_START, (PADDLE_W, PADDLE_H))
 
 # Player 2 paddle
-paddle_two_rect = pygame.Rect((PADDLE_TWO_START_X, PADDLE_TWO_START_Y), (PADDLE_WIDTH, PADDLE_HEIGHT))
+paddle_two_rect = pygame.Rect(PADDLE_TWO_START, (PADDLE_W, PADDLE_H))
 
 # Central divider
-divider = pygame.Rect((SCREEN_WIDTH / 2, 0), (DIVIDER_WIDTH, DIVIDER_HEIGHT))
+divider = pygame.Rect((SCREEN_WIDTH / 2 - 1, 0), (DIVIDER_WIDTH, DIVIDER_HEIGHT))
 
-# Scoring: 1 point if you hit the ball, -5 point if you miss the ball
+# Scoring: 1 point if you hit the ball 
 p1_score = 0
 p2_score = 0
+
+# Ball delay
+counter = 0
+delay = 100
 
 # Load the font for displaying the p1_score
 font = pygame.font.SysFont("Times New Roman", 30)
 
 # Game loop
 while True:
-    # Event handler
-
     # Check for a win.  Scores are reset here because otherwise they are not
     # preserved across the function call (...?)
     if p1_score >= 11:
@@ -75,19 +79,26 @@ while True:
         p1_score = 0
         p2_score = 0
         replay(2)
+
+    # Event handler
     for event in pygame.event.get():
     	if event.type == pygame.QUIT:
             quit()
-    	# Control the paddle with the mouse
 
-    # This test if up or down keys are pressed; if yes, move the paddle
+    # This tests if up or down keys are pressed; if yes, move the paddle
     if pygame.key.get_pressed()[pygame.K_w] and paddle_one_rect.top > 0:
     	paddle_one_rect.top -= BALL_SPEED
-    elif pygame.key.get_pressed()[pygame.K_s] and paddle_one_rect.bottom < SCREEN_HEIGHT:
+
+    elif pygame.key.get_pressed()[pygame.K_s] and \
+         paddle_one_rect.bottom < SCREEN_HEIGHT:
     	paddle_one_rect.top += BALL_SPEED
-    if pygame.key.get_pressed()[pygame.K_UP] and paddle_two_rect.top > 0:
+
+    if pygame.key.get_pressed()[pygame.K_UP] and \
+       paddle_two_rect.top > 0:
     	paddle_two_rect.top -= BALL_SPEED
-    elif pygame.key.get_pressed()[pygame.K_DOWN] and paddle_two_rect.bottom < SCREEN_HEIGHT:
+
+    elif pygame.key.get_pressed()[pygame.K_DOWN] and \
+         paddle_two_rect.bottom < SCREEN_HEIGHT:
     	paddle_two_rect.top += BALL_SPEED
 
     elif pygame.key.get_pressed()[pygame.K_ESCAPE]:
@@ -95,24 +106,31 @@ while True:
     	pygame.quit()
     	
     # Update ball position
-    ball_rect.left += ball_speed[0]
-    ball_rect.top += ball_speed[1]
+    if counter < 100:
+        counter = counter + 1
+    else:
+        ball_rect.left += ball_speed[0]
+        ball_rect.top += ball_speed[1]
 
-    # Ball collision with rails
+    # Ball collision with borders
     if ball_rect.top <= 0 or ball_rect.bottom >= SCREEN_HEIGHT:
     	ball_speed[1] = -ball_speed[1]
+
     if ball_rect.right >= SCREEN_WIDTH:
-        ball_rect.left = SCREEN_WIDTH / 2
-        ball_rect.top = SCREEN_HEIGHT / 2
+        ball_rect.left = BALL_DEF_POS[0]
+        ball_rect.top = BALL_DEF_POS[1]
         ball_speed = [BALL_SPEED, BALL_SPEED]
     	p1_score += 1
-    if ball_rect.left <= 0:
+        counter = 0
+
+    elif ball_rect.left <= 0:
         ball_rect.left = SCREEN_WIDTH / 2
         ball_rect.top = SCREEN_HEIGHT / 2
         ball_speed = [-BALL_SPEED, -BALL_SPEED]
     	p2_score += 1
+        counter = 0
 
-    # Test if the ball is hit by the paddle; if yes reverse speed and add a point
+    # Test if the ball is hit by the paddle; if yes reverse speed 
     if paddle_one_rect.colliderect(ball_rect):
     	ball_speed[0] = -ball_speed[0]
         sys.stdout.write(chr(7))
@@ -121,17 +139,25 @@ while True:
         sys.stdout.write(chr(7))
     
     # Clear screen
-    screen.fill((0, 0, 0))
+    screen.fill(BLACK)
 
-    # Render the ball, the paddle, and the p1_score
-    pygame.draw.rect(screen, (255, 255, 255), divider)
-    pygame.draw.rect(screen, (255, 255, 255), paddle_one_rect) # Your paddle
-    pygame.draw.rect(screen, (255, 255, 255), paddle_two_rect)
-    pygame.draw.circle(screen, (255, 255, 255), ball_rect.center, ball_rect.width / 2) # The ball
-    p1_score_text = font.render(str(p1_score), True, (255, 255, 255))
-    screen.blit(p1_score_text, ((SCREEN_WIDTH / 4) - font.size(str(p1_score))[0] / 2, 5)) # The p1_score
-    p2_score_text = font.render(str(p2_score), True, (255, 255, 255))
-    screen.blit(p2_score_text, ((SCREEN_WIDTH * 3 / 4) - font.size(str(p2_score))[0] / 2, 5)) # The p2_score
+    # Render the ball, paddles, and score
+    pygame.draw.rect(screen, WHITE, divider)
+    pygame.draw.rect(screen, WHITE, paddle_one_rect) 
+    pygame.draw.rect(screen, WHITE, paddle_two_rect)
+
+    # The ball
+    pygame.draw.circle(screen, WHITE, ball_rect.center, ball_rect.width / 2) 
+
+    # The p1_score
+    p1_score_text = font.render(str(p1_score), True, WHITE)
+    screen.blit(p1_score_text, ((SCREEN_WIDTH / 4) - \
+                                font.size(str(p1_score))[0] / 2, 5)) 
+
+    # The p2_score
+    p2_score_text = font.render(str(p2_score), True, WHITE)
+    screen.blit(p2_score_text, ((SCREEN_WIDTH * 3 / 4) - \
+                                font.size(str(p2_score))[0] / 2, 5)) 
     
     # Update screen and wait 20 milliseconds
     pygame.display.flip()

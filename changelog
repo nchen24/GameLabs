@@ -1,3 +1,13 @@
+March 8 2012 18:27
+    -Added BALL_DEF_POS as the ball's starting location for readability
+        -Moved the ball's starting position over 8 pixels to truly center it by
+         account for the ball's width
+    -Changed PADDLE_*_START_* to lists for readability and to shorten lines 
+    -Added delay before ball spawns again to allow players to get ready
+    -Added BLACK = (0, 0, 0) and WHITE = (255, 255, 255) for readabality
+    -Changed code commenting and spacing for readability
+    -PREV UNDOC: Changed background to black and paddles/ball/score to white
+
 March 8 2012 18:01
     -Removed mouse control for p1
     -Removed winsound from import list
