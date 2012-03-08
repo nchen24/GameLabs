@@ -1,5 +1,5 @@
 # By Nick Chen
-import pygame, sys, winsound
+import pygame, sys
 
 def quit():
     sys.exit(0)
@@ -79,13 +79,6 @@ while True:
     	if event.type == pygame.QUIT:
             quit()
     	# Control the paddle with the mouse
-    	elif event.type == pygame.MOUSEMOTION:
-    		paddle_one_rect.centery = event.pos[1]
-    		# correct paddle position if it's going out of window
-    		if paddle_one_rect.top < 0:
-    			paddle_one_rect.top = 0
-    		elif paddle_one_rect.bottom >= SCREEN_HEIGHT:
-    			paddle_one_rect.bottom = SCREEN_HEIGHT
 
     # This test if up or down keys are pressed; if yes, move the paddle
     if pygame.key.get_pressed()[pygame.K_w] and paddle_one_rect.top > 0:
