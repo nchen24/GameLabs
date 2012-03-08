@@ -1,11 +1,19 @@
+March 8 2012 14:38
+    -Changed ball behavior when a score is made (now spawns in the middle, moving
+     towards the person scored on last) 
+    -Added central line divider
+
 March 8 2012 12:28
-    Changed P1 paddle controls to W/S, added P2 paddle controls (Up/Down)
+    -Changed P1 paddle controls to W/S
+    -Added P2 paddle controls (Up/Down)
 
 March 8 2012 12:12
-    Added second paddle, made score increase on hitting the wall, not on paddle
+    -Added second paddle
+    -Made score increase on hitting the wall, not on paddle
 
 March 7 2012 16:13
-    Added P2 score, moved P1 score to the left
+    -Moved P1 score to the left
+    -Added P2 score 
 
 March 7 2012 15:00
-    Initial fork
+    0Initial fork

@@ -10,6 +10,8 @@ PADDLE_TWO_START_X = 780
 PADDLE_TWO_START_Y = 20
 PADDLE_WIDTH = 10
 PADDLE_HEIGHT = 100
+DIVIDER_WIDTH = 1
+DIVIDER_HEIGHT = SCREEN_HEIGHT
 BALL_SPEED = 10
 BALL_WIDTH_HEIGHT = 16
 
@@ -28,6 +30,9 @@ paddle_one_rect = pygame.Rect((PADDLE_ONE_START_X, PADDLE_ONE_START_Y), (PADDLE_
 
 # Player 2 paddle
 paddle_two_rect = pygame.Rect((PADDLE_TWO_START_X, PADDLE_TWO_START_Y), (PADDLE_WIDTH, PADDLE_HEIGHT))
+
+# Central divider
+divider = pygame.Rect((SCREEN_WIDTH / 2, 0), (DIVIDER_WIDTH, DIVIDER_HEIGHT))
 
 # Scoring: 1 point if you hit the ball, -5 point if you miss the ball
 p1_score = 0
@@ -74,10 +79,14 @@ while True:
     if ball_rect.top <= 0 or ball_rect.bottom >= SCREEN_HEIGHT:
     	ball_speed[1] = -ball_speed[1]
     if ball_rect.right >= SCREEN_WIDTH:
-    	ball_speed[0] = -ball_speed[0]
+        ball_rect.left = SCREEN_WIDTH / 2
+        ball_rect.top = SCREEN_HEIGHT / 2
+        ball_speed = [BALL_SPEED, BALL_SPEED]
     	p1_score += 1
     if ball_rect.left <= 0:
-    	ball_speed[0] = -ball_speed[0]
+        ball_rect.left = SCREEN_WIDTH / 2
+        ball_rect.top = SCREEN_HEIGHT / 2
+        ball_speed = [-BALL_SPEED, -BALL_SPEED]
     	p2_score += 1
 
     # Test if the ball is hit by the paddle; if yes reverse speed and add a point
@@ -90,6 +99,7 @@ while True:
     screen.fill((255, 255, 255))
 
     # Render the ball, the paddle, and the p1_score
+    pygame.draw.rect(screen, (0, 0, 0), divider)
     pygame.draw.rect(screen, (0, 0, 0), paddle_one_rect) # Your paddle
     pygame.draw.rect(screen, (0, 0, 0), paddle_two_rect)
     pygame.draw.circle(screen, (0, 0, 0), ball_rect.center, ball_rect.width / 2) # The ball
