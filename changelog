@@ -1,3 +1,16 @@
+March 8 2012 19:03
+    -Further tweaked the P2 "AI."  Difficulty can now be set on a level of 0-8,
+     where changes to the difficulty affect the speed that the AI can move at.
+     Difficulties of 0-1 may be unbeatable.  Default set at 3.
+    -Removed manual control of P2
+    -Notes: Complete(?)
+
+March 8 2012 18:43
+    -Tweaked the P2 "AI."  It never missed the ball before, so to attempt to
+     nerf the AI a little bit, it only tracks the ball when the ball is on the
+     right side of the court, AND it moves 20% slower than before
+    -Minor formatting changes
+
 March 8 2012 18:36
     -Added P2 "AI."  It always attempts to move to the same y value as the ball.
 
@@ -41,4 +54,4 @@ March 7 2012 16:13
     -Added P2 score 
 
 March 7 2012 15:00
-    0Initial fork
+    -Initial fork

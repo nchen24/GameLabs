@@ -1,5 +1,5 @@
 # By Nick Chen
-import pygame, sys
+import pygame, sys, random
 
 def quit():
     sys.exit(0)
@@ -8,7 +8,7 @@ def quit():
 def replay(winner):
     screen.fill(BLACK)
     font = pygame.font.SysFont("Times New Roman", 20)
-    msg = font.render("Player %d wins! Press space to play again, esc to quit"
+    msg = font.render("Player %d wins! Press space to play again, esc to quit"\
                       % winner, True, WHITE)
     screen.blit(msg, ((SCREEN_WIDTH / 2)/ 2, SCREEN_HEIGHT / 2)) 
     pygame.display.flip()
@@ -24,17 +24,19 @@ def replay(winner):
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-# (x, y) Coordinates
-PADDLE_ONE_START = (10,  SCREEN_HEIGHT / 2)
+PADDLE_ONE_START = (10,  SCREEN_HEIGHT / 2) # (x, y) Coordinates
 PADDLE_TWO_START = (780, SCREEN_HEIGHT / 2)
 PADDLE_W = 10
 PADDLE_H = 100
+
 DIVIDER_WIDTH = 2
 DIVIDER_HEIGHT = SCREEN_HEIGHT
+
 BALL_SPEED = 10
 BALL_W_H = 16
-BALL_DEF_POS = (SCREEN_WIDTH / 2 - BALL_W_H / 2, SCREEN_HEIGHT / 2)
-BLACK = (0, 0, 0)
+BALL_DEF_POS = ((SCREEN_WIDTH - BALL_W_H) / 2, (SCREEN_HEIGHT - BALL_W_H)/ 2)
+
+BLACK = (0,   0,   0  )
 WHITE = (255, 255, 255)
 
 pygame.init()
@@ -67,6 +69,13 @@ delay = 100
 # Load the font for displaying the p1_score
 font = pygame.font.SysFont("Times New Roman", 30)
 
+# Speed modifier for computer
+mod = 0
+
+# Difficulty level of the computer.  Do not set above 8.  Computer speed is
+# calculated by: 10 - randint(0, (8 - difficulty))
+difficulty = 3
+
 # Game loop
 while True:
     # Check for a win.  Scores are reset here because otherwise they are not
@@ -97,19 +106,14 @@ while True:
          paddle_one_rect.bottom < SCREEN_HEIGHT:
     	paddle_one_rect.top += BALL_SPEED
 
+    mod = random.randint(0, 8 - difficulty)
     if ((paddle_two_rect.top + paddle_two_rect.bottom)/2) > ball_rect.top:
-        paddle_two_rect.top -= BALL_SPEED
+        if ball_rect.left > SCREEN_WIDTH / 2:
+            paddle_two_rect.top -= (BALL_SPEED - mod)
     elif ((paddle_two_rect.top + paddle_two_rect.bottom)/2) < ball_rect.top:
-        paddle_two_rect.top += BALL_SPEED
+        if ball_rect.left > SCREEN_WIDTH / 2:
+            paddle_two_rect.top += (BALL_SPEED - mod)
 
-    if pygame.key.get_pressed()[pygame.K_UP] and \
-       paddle_two_rect.top > 0:
-    	paddle_two_rect.top -= BALL_SPEED
-
-    elif pygame.key.get_pressed()[pygame.K_DOWN] and \
-         paddle_two_rect.bottom < SCREEN_HEIGHT:
-    	paddle_two_rect.top += BALL_SPEED
-    	
     # Update ball position
     if counter < 100:
         counter = counter + 1
